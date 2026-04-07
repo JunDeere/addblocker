@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Auto Close Blocked Tabs</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      width: 360px;
+      margin: 0;
+      padding: 12px;
+      box-sizing: border-box;
+    }
+
+    h2 {
+      margin: 0 0 12px 0;
+      font-size: 18px;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 8px 10px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .item {
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 8px;
+      margin-bottom: 8px;
+      background: #fafafa;
+    }
+
+    .pattern {
+      font-size: 13px;
+      word-break: break-all;
+      margin-bottom: 8px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .empty {
+      color: #666;
+      font-size: 13px;
+      padding: 8px 0;
+    }
+
+    .status {
+      font-size: 12px;
+      margin-top: 8px;
+      color: green;
+      min-height: 16px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Blocked Links</h2>
+
+  <div class="row">
+    <input
+      type="text"
+      id="newPattern"
+      placeholder="e.g. *://*.popupdomain.com/*"
+    />
+    <button id="addBtn">Add</button>
+  </div>
+
+  <div id="list"></div>
+  <div class="status" id="status"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

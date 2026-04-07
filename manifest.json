@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Auto Close Blocked Tabs",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Automatically closes tabs that open blocked links or domains.",
   "permissions": [
     "tabs",
@@ -16,7 +16,8 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Auto Close Blocked Tabs"
+    "default_title": "Auto Close Blocked Tabs",
+    "default_popup": "popup.html"
   },
   "options_page": "options.html"
 }
