@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Blocked Links</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 800px;
+    }
+    textarea {
+      width: 100%;
+      height: 300px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+    button {
+      margin-top: 12px;
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+    .hint {
+      color: #555;
+      margin-bottom: 12px;
+    }
+    .status {
+      margin-top: 12px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Blocked Links / Domains</h1>
+  <p class="hint">
+    Put one pattern per line. Examples:<br>
+    <code>https://example.com/*</code><br>
+    <code>*://*.adsite.com/*</code><br>
+    <code>*://badpopup.com/*</code>
+  </p>
+
+  <textarea id="blocklist"></textarea><br>
+  <button id="saveBtn">Save</button>
+  <div class="status" id="status"></div>
+
+  <script src="options.js"></script>
+</body>
+</html>
