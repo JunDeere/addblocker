@@ -30,7 +30,13 @@ async function getBlocklist() {
 }
 
 async function isBlockedUrl(url) {
-  if (!url || url.startsWith("chrome://") || url.startsWith("brave://") || url.startsWith("edge://")) {
+  if (
+    !url ||
+    url.startsWith("chrome://") ||
+    url.startsWith("brave://") ||
+    url.startsWith("edge://") ||
+    url.startsWith("about:")
+  ) {
     return false;
   }
 
@@ -38,10 +44,18 @@ async function isBlockedUrl(url) {
 
   for (const pattern of blocklist) {
     try {
-      const regex = wildcardToRegex(pattern);
-      if (regex.test(url)) {
-        return true;
-      }
+      const trimmed = pattern.trim();
+      if (!trimmed) continue;
+
+      // exact
+      if (trimmed === url) return true;
+
+      // substring/domain match
+      if (url.includes(trimmed)) return true;
+
+      // wildcard match
+      const regex = wildcardToRegex(trimmed);
+      if (regex.test(url)) return true;
     } catch (e) {
       console.warn("Invalid pattern:", pattern, e);
     }
@@ -54,26 +68,27 @@ async function closeIfBlocked(tabId, url) {
   if (!tabId || !url) return;
 
   const blocked = await isBlockedUrl(url);
-  if (blocked) {
-    try {
-      await chrome.tabs.remove(tabId);
-      console.log("Closed blocked tab:", url);
-    } catch (err) {
-      console.warn("Could not close tab:", err);
-    }
+  if (!blocked) return;
+
+  try {
+    await chrome.tabs.remove(tabId);
+    console.log("Closed blocked tab:", url);
+  } catch (err) {
+    console.warn("Could not close tab:", err);
   }
 }
 
-// Fires when a tab updates its URL/loading state
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  const url = changeInfo.url || tab.url;
-  await closeIfBlocked(tabId, url);
+chrome.tabs.onCreated.addListener(async (tab) => {
+  const url = tab.pendingUrl || tab.url;
+  if (tab.id && url) {
+    await closeIfBlocked(tab.id, url);
+  }
 });
 
-// Fires when a new tab is created
-chrome.tabs.onCreated.addListener(async (tab) => {
-  if (tab.id && tab.url) {
-    await closeIfBlocked(tab.id, tab.url);
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  const url = changeInfo.url || tab.pendingUrl || tab.url;
+  if (url) {
+    await closeIfBlocked(tabId, url);
   }
 });
 
@@ -91,7 +106,6 @@ async function syncDynamicRules() {
     condition: {
       urlFilter: patternToUrlFilter(pattern),
       resourceTypes: [
-        "main_frame",
         "sub_frame",
         "script",
         "image",
